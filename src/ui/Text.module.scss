@@ -1,0 +1,81 @@
+@mixin heading-shared {
+  font-family: Inter, sans-serif;
+  font-weight: 700;
+  line-height: 100%;
+}
+
+@mixin heading-size($size) {
+  font-size: $size;
+  letter-spacing: -(0.022 * $size);
+}
+
+@mixin content-shared {
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+}
+
+.h1 {
+  @include heading-shared;
+  @include heading-size(28.378px);
+}
+
+.h2 {
+  @include heading-shared;
+  @include heading-size(25.228px);
+}
+
+.h3 {
+  @include heading-shared;
+  @include heading-size(22.428px);
+}
+
+.h4 {
+  @include heading-shared;
+  @include heading-size(19.936px);
+}
+
+.h5 {
+  @include heading-shared;
+  @include heading-size(17.724px);
+}
+
+.h6 {
+  @include heading-shared;
+  @include heading-size(15.75px);
+}
+
+.body {
+  @include content-shared;
+  font-size: 14px;
+  line-height: 160%;
+}
+
+.small {
+  @include content-shared;
+  font-size: 12.446px;
+  line-height: 100%;
+}
+
+.note {
+  @include content-shared;
+  color: var(--foreground-tint);
+  font-size: 11.06px;
+  line-height: 100%;
+}
+
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+}
+
+.clamp-1 {
+  @include line-clamp(1);
+}
+.clamp-2 {
+  @include line-clamp(2);
+}
+.clamp-3 {
+  @include line-clamp(3);
+}

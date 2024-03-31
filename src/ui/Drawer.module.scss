@@ -1,0 +1,86 @@
+$menu-width: min(400px, 100%);
+$duration: 200ms;
+
+.backdrop {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100%;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  opacity: 0;
+
+  &.enter {
+    display: block;
+    opacity: 0;
+  }
+  &.enterActive {
+    display: block;
+    opacity: 1;
+    transition: opacity $duration linear;
+  }
+  &.enterDone {
+    display: block;
+    opacity: 1;
+    transition: none;
+  }
+  &.exit {
+    display: block;
+    opacity: 1;
+  }
+  &.exitActive {
+    display: block;
+    opacity: 0;
+    transition: opacity $duration linear;
+  }
+  &.exitDone {
+    opacity: 0;
+    display: none;
+  }
+}
+
+.drawer {
+  background-color: var(--background);
+  position: fixed;
+  top: 0;
+  left: 100vw;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  display: none;
+  flex-direction: column;
+  width: $menu-width;
+
+  &.enter {
+    display: flex;
+    left: 100vw;
+  }
+  &.enterActive {
+    display: flex;
+    left: calc(100vw - $menu-width);
+    transition: left $duration ease-in-out;
+  }
+  &.enterDone {
+    display: flex;
+    left: calc(100vw - $menu-width);
+  }
+  &.exit {
+    display: flex;
+    left: calc(100vw - $menu-width);
+  }
+  &.exitActive {
+    display: flex;
+    left: 100vw;
+    transition: left $duration ease-in-out;
+  }
+  &.exitDone {
+    left: 100vw;
+    display: none;
+  }
+}
+
+.scrollArea {
+  flex: 1 1 auto;
+  overflow-y: scroll;
+  padding-bottom: 16;
+}

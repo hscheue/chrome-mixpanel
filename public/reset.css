@@ -1,0 +1,40 @@
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* All Elements */
+* {
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-decoration: none;
+  word-wrap: break-word;
+  list-style: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Form Elements */
+input,
+button,
+textarea,
+select {
+  appearance: none;
+  background: none;
+  border: 1px solid grey;
+}
+
+/* Media Elements */
+img,
+picture,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
