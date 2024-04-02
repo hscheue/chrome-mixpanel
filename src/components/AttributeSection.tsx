@@ -1,6 +1,7 @@
 import Text from "../ui/Text";
 import styles from "./AttributeSection.module.scss";
 import {
+  documentAttr,
   facetableAttr,
   linkableAttr,
   mixpanelAttr,
@@ -59,6 +60,7 @@ function renderValue(value: MixpanelEventData["properties"][string]): {
 }
 
 const structuralMap = getSortMap(structuralAttr);
+const documentMap = getSortMap(documentAttr);
 const linkableMap = getSortMap(linkableAttr);
 const toggleableMap = getSortMap(toggleableAttr);
 const facetableMap = getSortMap(facetableAttr);
@@ -76,6 +78,7 @@ export function parseAside(
   aside: MixpanelEventData["properties"]
 ): [string, Entry[]][] {
   const structural: Entry[] = [];
+  const document: Entry[] = [];
   const linkable: Entry[] = [];
   const toggleable: Entry[] = [];
   const facetable: Entry[] = [];
@@ -86,6 +89,7 @@ export function parseAside(
 
   for (const entry of Object.entries(aside)) {
     addEntry(structural, structuralAttr, structuralMap, entry) ||
+      addEntry(document, documentAttr, documentMap, entry) ||
       addEntry(linkable, linkableAttr, linkableMap, entry) ||
       addEntry(toggleable, toggleableAttr, toggleableMap, entry) ||
       addEntry(facetable, facetableAttr, facetableMap, entry) ||
@@ -97,6 +101,7 @@ export function parseAside(
 
   return [
     ["structural", sortEntries(structural)],
+    ["document", sortEntries(document)],
     ["linkable", sortEntries(linkable)],
     ["toggleable", sortEntries(toggleable)],
     ["facetable", sortEntries(facetable)],
