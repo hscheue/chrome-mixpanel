@@ -3,6 +3,7 @@ import Drawer from "../ui/Drawer";
 import { useSettings, useSettingsDispatch } from "../hooks/settings";
 import styles from "./SettingsDrawer.module.scss";
 import Text from "../ui/Text";
+import { mixpanelStore } from "../hooks/mixpanel-store";
 
 export default function SettingsDrawer() {
   const [value, setValue] = useState("");
@@ -14,6 +15,7 @@ export default function SettingsDrawer() {
     <>
       <div className={styles.header}>
         <Text as="h1">Mixpanel</Text>
+        <button onClick={() => mixpanelStore.deleteEvents()}>Clear</button>
         <button onClick={() => setOpen(true)}>Open Drawer</button>
       </div>
       <Drawer open={open} onClose={() => setOpen(false)}>

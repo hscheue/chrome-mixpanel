@@ -32,6 +32,10 @@ export const mixpanelStore = {
     ];
     emitChange();
   },
+  deleteEvents() {
+    events = [];
+    emitChange();
+  },
   subscribe(listener: () => void) {
     listeners = [...listeners, listener];
     return () => {
