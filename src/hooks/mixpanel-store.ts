@@ -24,11 +24,11 @@ function emitChange() {
 export const mixpanelStore = {
   addEvents(mixpanelData: MixpanelEventData[]) {
     events = [
-      ...events,
-      ...mixpanelData.map((entry) => {
+      ...mixpanelData.toReversed().map((entry) => {
         const uuid = window.crypto.randomUUID();
         return { ...entry, id: uuid };
       }),
+      ...events,
     ];
     emitChange();
   },
