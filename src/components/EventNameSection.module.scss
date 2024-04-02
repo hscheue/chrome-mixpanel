@@ -4,11 +4,6 @@
   flex-direction: column;
   overflow-y: scroll;
 
-  li {
-    width: 100%;
-    margin-bottom: 4px;
-  }
-
   button {
     width: 100%;
     border-radius: 20px;
@@ -20,4 +15,23 @@
 
 .active {
   background-color: var(--background-tint);
+}
+
+.li {
+  width: 100%;
+  margin-bottom: 4px;
+  opacity: 0;
+
+  &.enter {
+    opacity: 0;
+    transition: opacity linear 400ms;
+  }
+  &.enterActive {
+    opacity: 1;
+    transition: opacity linear 400ms;
+  }
+  &.enterDone {
+    opacity: 1;
+    transition: opacity linear 400ms;
+  }
 }
