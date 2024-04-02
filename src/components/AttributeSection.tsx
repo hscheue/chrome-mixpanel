@@ -10,6 +10,8 @@ import {
   universalAttr,
 } from "../types/property-types";
 import Stack from "../ui/Stack";
+import { MixpanelEventData } from "../hooks/mixpanel-store";
+import clsx from "clsx";
 
 export function AttributeSection({
   title,
@@ -34,16 +36,26 @@ export function AttributeSection({
       </summary>
       <ul>
         {entries.map((entry) => {
+          const { value, accent } = renderValue(entry.value);
           return (
             <Stack as="li" gap={4} key={entry.key}>
               <Text variant={"note"}>{entry.key}:</Text>
-              <Text>{entry.value === null ? "null" : entry.value}</Text>
+              <Text className={clsx(accent && styles.accent)}>{value}</Text>
             </Stack>
           );
         })}
       </ul>
     </details>
   );
+}
+
+function renderValue(value: MixpanelEventData["properties"][string]): {
+  value: string;
+  accent?: true;
+} {
+  if (typeof value === "string") return { value };
+  if (typeof value === "object") return { value: `${JSON.stringify(value)}` };
+  return { value: `${value?.toString()}`, accent: true };
 }
 
 const structuralMap = getSortMap(structuralAttr);
@@ -54,10 +66,14 @@ const mixpanelMap = getSortMap(mixpanelAttr);
 const superMap = getSortMap(superAttr);
 const universalMap = getSortMap(universalAttr);
 
-type Entry = { key: string; value: string | number | null; order: number };
+type Entry = {
+  key: string;
+  value: MixpanelEventData["properties"][string];
+  order: number;
+};
 
 export function parseAside(
-  aside: Record<string, string | number | null>
+  aside: MixpanelEventData["properties"]
 ): [string, Entry[]][] {
   const structural: Entry[] = [];
   const linkable: Entry[] = [];
@@ -95,7 +111,7 @@ function addEntry(
   target: Entry[],
   attributeList: string[],
   attributeSortMap: Record<string, number>,
-  [key, value]: [string, string | number | null]
+  [key, value]: [string, MixpanelEventData["properties"][string]]
 ) {
   if (attributeList.some((arg) => arg === key)) {
     target.push({ key: key, value, order: attributeSortMap[key] });

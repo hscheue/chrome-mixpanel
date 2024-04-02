@@ -4,7 +4,10 @@ import { seedData } from "../dev/seedData";
 export type MixpanelEventData = {
   id: string;
   event: string;
-  properties: Record<string, string | number | null>;
+  properties: Record<
+    string,
+    string | number | boolean | undefined | null | object
+  >;
 };
 
 let events: (MixpanelEventData & { id: string })[] = [];
