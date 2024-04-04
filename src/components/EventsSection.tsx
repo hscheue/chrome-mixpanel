@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import styles from "./EventsSection.module.scss";
-import { AttributeSection, parseAside } from "./AttributeSection";
+import { AttributeSection } from "./AttributeSection";
 import EventNameSection from "./EventNameSection";
 import { MixpanelEventData } from "../hooks/mixpanel-store";
-import Text from "../ui/Text";
+import { parseAside } from "./parseAside";
 
 export default function EventsSection() {
   const [mixpanelData, setMixpanelData] = useState<MixpanelEventData | null>(
