@@ -1,18 +1,23 @@
 import Text from "../ui/Text";
 import styles from "./AttributeSection.module.scss";
-import {
-  documentAttr,
-  facetableAttr,
-  linkableAttr,
-  mixpanelAttr,
-  structuralAttr,
-  superAttr,
-  toggleableAttr,
-  universalAttr,
-} from "../types/property-types";
 import Stack from "../ui/Stack";
 import { MixpanelEventData } from "../hooks/mixpanel-store";
 import clsx from "clsx";
+import {
+  Config,
+  defaultPropertySettings,
+} from "../dev/default-property-settings";
+
+const entryKeyAndSortMap = getAllSortMaps(defaultPropertySettings);
+
+function getEntryKeyByMxKey(
+  mxKey: string
+): [string, Record<string, number>] | undefined {
+  return entryKeyAndSortMap.find(([key, sortMap]) => {
+    if (sortMap[mxKey]) return true;
+    return false;
+  });
+}
 
 export function AttributeSection({
   title,
@@ -59,15 +64,6 @@ function renderValue(value: MixpanelEventData["properties"][string]): {
   return { value: `${value?.toString()}`, accent: true };
 }
 
-const structuralMap = getSortMap(structuralAttr);
-const documentMap = getSortMap(documentAttr);
-const linkableMap = getSortMap(linkableAttr);
-const toggleableMap = getSortMap(toggleableAttr);
-const facetableMap = getSortMap(facetableAttr);
-const mixpanelMap = getSortMap(mixpanelAttr);
-const superMap = getSortMap(superAttr);
-const universalMap = getSortMap(universalAttr);
-
 type Entry = {
   key: string;
   value: MixpanelEventData["properties"][string];
@@ -77,58 +73,28 @@ type Entry = {
 export function parseAside(
   aside: MixpanelEventData["properties"]
 ): [string, Entry[]][] {
-  const structural: Entry[] = [];
-  const document: Entry[] = [];
-  const linkable: Entry[] = [];
-  const toggleable: Entry[] = [];
-  const facetable: Entry[] = [];
-  const mixpanel: Entry[] = [];
-  const superProps: Entry[] = [];
-  const universal: Entry[] = [];
   const other: Entry[] = [];
+  const entries = getEntryValues(defaultPropertySettings);
 
-  for (const entry of Object.entries(aside)) {
-    addEntry(structural, structuralAttr, structuralMap, entry) ||
-      addEntry(document, documentAttr, documentMap, entry) ||
-      addEntry(linkable, linkableAttr, linkableMap, entry) ||
-      addEntry(toggleable, toggleableAttr, toggleableMap, entry) ||
-      addEntry(facetable, facetableAttr, facetableMap, entry) ||
-      addEntry(mixpanel, mixpanelAttr, mixpanelMap, entry) ||
-      addEntry(superProps, superAttr, superMap, entry) ||
-      addEntry(universal, universalAttr, universalMap, entry) ||
-      other.push({ key: entry[0], value: entry[1], order: 1 });
+  for (const [mxKey, mxValue] of Object.entries(aside)) {
+    const entryKeyAndSort = getEntryKeyByMxKey(mxKey);
+    if (entryKeyAndSort) {
+      const [entryKey, sortMap] = entryKeyAndSort;
+      if (Array.isArray(entries[entryKey])) {
+        entries[entryKey].push({
+          key: mxKey,
+          value: mxValue,
+          order: sortMap[mxKey],
+        });
+      } else {
+        other.push({ key: mxKey, value: mxValue, order: 1 });
+      }
+    } else {
+      other.push({ key: mxKey, value: mxValue, order: 1 });
+    }
   }
 
-  return [
-    ["structural", sortEntries(structural)],
-    ["document", sortEntries(document)],
-    ["linkable", sortEntries(linkable)],
-    ["toggleable", sortEntries(toggleable)],
-    ["facetable", sortEntries(facetable)],
-    ["other", other],
-    ["universal", sortEntries(universal)],
-    ["super", sortEntries(superProps)],
-    ["mixpanel", sortEntries(mixpanel)],
-  ];
-}
-
-function addEntry(
-  target: Entry[],
-  attributeList: string[],
-  attributeSortMap: Record<string, number>,
-  [key, value]: [string, MixpanelEventData["properties"][string]]
-) {
-  if (attributeList.some((arg) => arg === key)) {
-    target.push({ key: key, value, order: attributeSortMap[key] });
-    return true;
-  }
-  return false;
-}
-
-function sortEntries(entries: Entry[]) {
-  return entries.sort((recordA, recordB) => {
-    return (recordA.order || 10000) - (recordB.order || 10000);
-  });
+  return [["other", other], ...Object.entries(entries)];
 }
 
 function getSortMap(sortOrder: string[]) {
@@ -137,4 +103,14 @@ function getSortMap(sortOrder: string[]) {
     return data;
   }, {} as Record<string, number>);
   return sortMap;
+}
+
+function getAllSortMaps(config: Config): [string, Record<string, number>][] {
+  return config.map((row) => [row[0], getSortMap(row[1])]);
+}
+
+function getEntryValues(config: Config) {
+  const cc: Record<string, Entry[]> = {};
+  config.forEach((c) => (cc[c[0]] = []));
+  return cc;
 }
