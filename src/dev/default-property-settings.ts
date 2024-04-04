@@ -18,8 +18,7 @@ export const defaultPropertySettings: Config = [
     ],
   ],
   ["document", ["document_id", "document_title", "document_type"]],
-  ["linkable", []],
-
+  ["linkable", ["href"]],
   ["toggleable", ["checked"]],
   ["facetable", ["facet"]],
   ["universal", ["pathname", "environment", "project", "name"]],
