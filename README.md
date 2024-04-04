@@ -1,5 +1,3 @@
-# Chrome Mixpanel
+# chrome mixpanel
 
-## FAQ
-
-- If you aren't seeing events, your browser may be sending 'do not track' with requests.
+A chrome extension for debugging mixpanel analytics tracking through web requests
