@@ -5,12 +5,8 @@ import {
   type Dispatch,
   type PropsWithChildren,
 } from "react";
-
-export type Config = {
-  id: string;
-  title: string;
-  values: string[];
-};
+import { Config } from "./types";
+import { atkPreset, mixpanelPreset } from "./presets";
 
 type State = Config[];
 
@@ -98,4 +94,7 @@ const configReducer: Reducer = (config, action) => {
   }
 };
 
-const initialConfig = [] satisfies Config[];
+const initialConfig =
+  process.env.NODE_ENV === "development" ? atkPreset : mixpanelPreset;
+
+export function addPreset() {}
