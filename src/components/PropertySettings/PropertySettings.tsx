@@ -1,5 +1,6 @@
-import { Config, useConfig, useConfigDispatch } from "./ConfigContext";
+import { useConfig, useConfigDispatch } from "./ConfigContext";
 import styles from "./PropertySettings.module.scss";
+import { Config } from "./types";
 
 export default function PropertySettings() {
   const list = useConfig();
