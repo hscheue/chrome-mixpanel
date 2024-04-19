@@ -4,6 +4,8 @@ import { useSettings, useSettingsDispatch } from "../hooks/settings";
 import styles from "./SettingsDrawer.module.scss";
 import Text from "../ui/Text";
 import { mixpanelStore } from "../hooks/mixpanel-store";
+import PropertySettings from "./PropertySettings/PropertySettings";
+import { ConfigProvider } from "./PropertySettings/ConfigContext";
 
 export default function SettingsDrawer() {
   const [value, setValue] = useState("");
@@ -65,6 +67,10 @@ export default function SettingsDrawer() {
         >
           Save
         </Text>
+
+        <ConfigProvider>
+          <PropertySettings />
+        </ConfigProvider>
       </Drawer>
     </>
   );
