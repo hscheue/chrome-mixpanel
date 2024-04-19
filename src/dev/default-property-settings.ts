@@ -5,7 +5,7 @@ export type Config = [string, string[]][];
  * Then read configs through text field,
  * then build UI to create a config without using json
  */
-export const defaultPropertySettings: Config = [
+[
   [
     "structural",
     [

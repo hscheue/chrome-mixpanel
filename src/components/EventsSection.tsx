@@ -4,15 +4,17 @@ import { AttributeSection } from "./AttributeSection";
 import EventNameSection from "./EventNameSection";
 import { MixpanelEventData } from "../hooks/mixpanel-store";
 import { parseAside } from "./parseAside";
+import { useSettings } from "../hooks/settings";
 
 export default function EventsSection() {
+  const { config } = useSettings();
   const [mixpanelData, setMixpanelData] = useState<MixpanelEventData | null>(
     null
   );
 
   const parsedAside = useMemo(() => {
     if (!mixpanelData || !mixpanelData.properties) return [];
-    return parseAside(mixpanelData.properties);
+    return parseAside(mixpanelData.properties, config);
   }, [mixpanelData]);
 
   const selectedID = useMemo(() => {

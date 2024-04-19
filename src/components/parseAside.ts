@@ -1,8 +1,6 @@
-import {
-  Config,
-  defaultPropertySettings,
-} from "../dev/default-property-settings";
+import { Config } from "../dev/default-property-settings";
 import { MixpanelEventData } from "../hooks/mixpanel-store";
+import { useSettings } from "../hooks/settings";
 
 export type Entry = {
   key: string;
@@ -10,16 +8,43 @@ export type Entry = {
   order: number;
 };
 
-const entryKeyAndSortMap = getAllSortMaps(defaultPropertySettings);
+type EntryKeySortMapUndef = [string, Record<string, number>][] | undefined;
+
+const config: {
+  entryKeyAndSortMap: EntryKeySortMapUndef;
+} = {
+  entryKeyAndSortMap: undefined,
+};
+
+function parseConfig(config: string | undefined) {
+  try {
+    if (config) {
+      const j = JSON.parse(config);
+      console.log({ j });
+      return j;
+    }
+  } catch (err) {
+    return [];
+  }
+  return [];
+}
 
 export function parseAside(
-  aside: MixpanelEventData["properties"]
+  aside: MixpanelEventData["properties"],
+  settings: string | undefined
 ): [string, Entry[]][] {
+  const propSettings = parseConfig(settings);
+  if (!config.entryKeyAndSortMap) {
+    config.entryKeyAndSortMap = getAllSortMaps(propSettings);
+  }
   const other: Entry[] = [];
-  const entries = getEntryValues(defaultPropertySettings);
+  const entries = getEntryValues(propSettings);
 
   for (const [mxKey, mxValue] of Object.entries(aside)) {
-    const entryKeyAndSort = getEntryKeyByMxKey(mxKey);
+    const entryKeyAndSort = getEntryKeyByMxKey(
+      config.entryKeyAndSortMap,
+      mxKey
+    );
     if (entryKeyAndSort) {
       const [entryKey, sortMap] = entryKeyAndSort;
       if (Array.isArray(entries[entryKey])) {
@@ -58,8 +83,10 @@ function getEntryValues(config: Config) {
 }
 
 function getEntryKeyByMxKey(
+  entryKeyAndSortMap: EntryKeySortMapUndef,
   mxKey: string
 ): [string, Record<string, number>] | undefined {
+  if (!entryKeyAndSortMap) return undefined;
   return entryKeyAndSortMap.find(([key, sortMap]) => {
     if (sortMap[mxKey]) return true;
     return false;

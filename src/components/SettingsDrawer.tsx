@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Drawer from "../ui/Drawer";
 import { useSettings, useSettingsDispatch } from "../hooks/settings";
 import styles from "./SettingsDrawer.module.scss";
@@ -7,9 +7,22 @@ import { mixpanelStore } from "../hooks/mixpanel-store";
 
 export default function SettingsDrawer() {
   const [value, setValue] = useState("");
+  const [value2, setValue2] = useState("");
   const [open, setOpen] = useState(false);
-  const { api_host } = useSettings();
+  const { api_host, config } = useSettings();
   const dispatch = useSettingsDispatch();
+
+  useEffect(() => {
+    if (api_host) {
+      setValue(api_host);
+    }
+  }, [api_host]);
+
+  useEffect(() => {
+    if (config) {
+      setValue2(config);
+    }
+  }, [config]);
 
   return (
     <>
@@ -23,10 +36,22 @@ export default function SettingsDrawer() {
           <label>
             <Text as="h3">API Host</Text>
             <textarea
-              placeholder={api_host}
-              value={value}
+              placeholder={"API Host"}
+              value={value ?? api_host}
               onChange={(ev) => setValue(ev.currentTarget.value)}
               defaultValue={api_host}
+            />
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <label>
+            <Text as="h3">Properies Configuration</Text>
+            <textarea
+              placeholder={"Property Configuration"}
+              value={value2}
+              onChange={(ev) => setValue2(ev.currentTarget.value)}
+              defaultValue={config}
             />
           </label>
         </fieldset>
@@ -35,6 +60,7 @@ export default function SettingsDrawer() {
           as="button"
           onClick={() => {
             dispatch({ type: "set api_host", textvalue: value });
+            dispatch({ type: "set priority properties", textvalue: value2 });
           }}
         >
           Save

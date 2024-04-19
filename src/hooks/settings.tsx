@@ -9,15 +9,18 @@ import {
 
 type State = {
   api_host: string | undefined;
+  config: string | undefined;
 };
 
-const initialSetting = { api_host: undefined } satisfies State;
+const initialSetting = {
+  api_host: undefined,
+  config: undefined,
+} satisfies State;
 
 type Action =
-  | { type: "load"; api_host: string }
+  | { type: "load"; api_host: string; config: string }
   | { type: "set api_host"; textvalue: string }
-  | { type: "set priority properties"; textvalue: string }
-  | { type: "set super properties"; textvalue: string };
+  | { type: "set priority properties"; textvalue: string };
 
 type Reducer = (state: State, action: Action) => State;
 
@@ -56,9 +59,11 @@ export function useSettingsDispatch(): Dispatch<Action> {
 }
 
 const settingsReducer: Reducer = (state, action) => {
+  console.log(action.type);
   switch (action.type) {
     case "load": {
-      return { ...state, api_host: action.api_host };
+      console.log(action);
+      return { ...state, api_host: action.api_host, config: action.config };
     }
     case "set api_host": {
       chrome.storage.local.set({
@@ -67,6 +72,15 @@ const settingsReducer: Reducer = (state, action) => {
       return {
         ...state,
         api_host: action.textvalue,
+      };
+    }
+    case "set priority properties": {
+      chrome.storage.local.set({
+        config: action.textvalue,
+      });
+      return {
+        ...state,
+        config: action.textvalue,
       };
     }
 
@@ -81,8 +95,12 @@ function LoadEffect() {
 
   useEffect(() => {
     (async () => {
-      const { api_host = "" } = await chrome.storage.local.get(["api_host"]);
-      dispatch({ type: "load", api_host });
+      const { api_host = "", config = "" } = await chrome.storage.local.get([
+        "api_host",
+        "config",
+      ]);
+      console.log(api_host, config);
+      dispatch({ type: "load", api_host, config });
     })();
   }, []);
 
